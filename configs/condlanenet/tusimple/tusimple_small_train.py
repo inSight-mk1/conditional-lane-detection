@@ -3,7 +3,7 @@
 """
 # global settings
 dataset_type = 'TuSimpleDataset'
-data_root = "/disk1/zhouyang/dataset/tuSimple"
+data_root = "/data/dongwei/dataset/tusimple_json/changxing100_lanes"
 test_mode = False
 mask_down_scale = 8
 hm_down_scale = 16
@@ -12,7 +12,7 @@ line_width = 3
 radius = 6
 nms_thr = 2
 num_lane_classes = 1
-batch_size = 8
+batch_size = 1
 img_norm_cfg = dict(
     mean=[75.3, 76.6, 77.6], std=[50.5, 53.8, 54.3], to_rgb=False)
 img_scale = (800, 320)
@@ -190,9 +190,8 @@ data = dict(
         type=dataset_type,
         data_root=data_root,
         data_list=[
-            data_root + '/label_data_0313.json',
-            data_root + '/label_data_0531.json',
-            data_root + '/label_data_0601.json'
+            data_root + '/label_data_20201229.json',
+            data_root + '/label_data_20201221.json'
         ],
         pipeline=train_pipeline,
         test_mode=False,
@@ -200,14 +199,14 @@ data = dict(
     val=dict(
         type=dataset_type,
         data_root=data_root,
-        data_list=[data_root + '/test_baseline.json'],
+        data_list=[data_root + '/label_data_val.json'],
         pipeline=val_pipeline,
         test_mode=False,
     ),
     test=dict(
         type=dataset_type,
         data_root=data_root,
-        data_list=[data_root + '/test_label.json'],
+        data_list=[data_root + '/label_data_test.json'],
         test_suffix='.jpg',
         pipeline=val_pipeline,
         test_mode=True,
@@ -234,7 +233,7 @@ log_config = dict(
     ])
 
 total_epochs = 70
-device_ids = "0,1"
+device_ids = "0"
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/tusimple/small'

@@ -49,6 +49,7 @@ class TuSimpleDataset(CustomDataset):
     def prepare_train_img(self, idx):
         sub_img_name = self.img_infos[idx]['raw_file']
         imgname = path_join(self.img_prefix, sub_img_name)
+        #print(imgname)
         img = cv2.imread(imgname)
         ori_shape = img.shape
         offset_x = 0

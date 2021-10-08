@@ -29,8 +29,7 @@ class CondLanePostProcessor(object):
         self.mask_downscale = mask_downscale
         self.use_offset = use_offset
         self.horizontal_id = [5]
-        # nms 停止线和路沿单独一组
-        self.nms_groups = [[1]]
+        # nms 停止线和路沿单独一�?        self.nms_groups = [[1]]
         if 'nms_thr' in kwargs:
             self.nms_thr = kwargs['nms_thr']
         else:
@@ -321,6 +320,8 @@ class CondLaneNet(SingleStageDetector):
         should be double nested (i.e.  List[Tensor], List[List[dict]]), with
         the outer list indicating test time augmentations.
         """
+        img = img.data[0]
+        img_metas = img_metas.data[0]
         if img_metas is None:
             return self.test_inference(img)
         elif return_loss:
@@ -329,6 +330,7 @@ class CondLaneNet(SingleStageDetector):
             return self.forward_test(img, img_metas, **kwargs)
 
     def forward_train(self, img, img_metas, **kwargs):
+        # print(img_metas.data)
         gt_batch_masks = [m['gt_masks'] for m in img_metas]
         hm_shape = img_metas[0]['hm_shape']
         mask_shape = img_metas[0]['mask_shape']

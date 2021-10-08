@@ -6,6 +6,7 @@ import torch.nn.functional as F
 import numpy as np
 from mmdet.models.builder import LOSSES
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class CrossEntropyLoss(nn.Module):
 
@@ -28,6 +29,7 @@ def _neg_loss(pred, gt, channel_weights=None):
       pred (batch x c x h x w)
       gt_regr (batch x c x h x w)
     '''
+    gt = gt.data[0].to(device)
     pos_inds = gt.eq(1).float()
     neg_inds = gt.lt(1).float()
 
@@ -78,6 +80,8 @@ class RegL1KpLoss(nn.Module):
         super(RegL1KpLoss, self).__init__()
 
     def forward(self, output, target, mask):
+        target = target.to(device)
+        mask = mask.to(device)
         loss = F.l1_loss(output * mask, target * mask, size_average=False)
         mask = mask.bool().float()
         loss = loss / (mask.sum() + 1e-4)
@@ -141,7 +145,7 @@ class CondLaneLoss(torch.nn.Module):
                                      kwargs['gt_row_masks'])
 
         if self.range_weight > 0:
-            range_loss = self.crit_ce(lane_range, kwargs['gt_ranges'])
+            range_loss = self.crit_ce(lane_range, kwargs['gt_ranges'].to(device))
 
         # Only non-zero losses are valid, otherwise multi-GPU training will report an error
         losses = {}
